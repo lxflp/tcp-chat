@@ -1,6 +1,9 @@
 package main
 
-import "github.com/lxflp/tcp-chat/server"
+import (
+	"fmt"
+	"github.com/lxflp/tcp-chat/server"
+)
 
 func main() {
 	var cfg server.Config
@@ -8,5 +11,6 @@ func main() {
 	cfg.Host = "0.0.0.0"
 	var srv *server.Server
 	srv = server.NewServer(&cfg)
+	fmt.Println("Сервер запущен")
 	srv.Run()
 }

@@ -9,13 +9,15 @@ import (
 
 // Server ...
 type Server struct {
-	host string
-	port string
+	host    string
+	port    string
+	clients []*Client
 }
 
 // Client ...
 type Client struct {
-	conn net.Conn
+	conn   net.Conn
+	server *Server
 }
 
 // Config ...
@@ -48,8 +50,10 @@ func (server *Server) Run() {
 		}
 
 		client := &Client{
-			conn: conn,
+			conn:   conn,
+			server: server,
 		}
+		server.clients = append(server.clients, client)
 		go client.handleRequest()
 	}
 }
@@ -62,7 +66,8 @@ func (client *Client) handleRequest() {
 			client.conn.Close()
 			return
 		}
-		fmt.Printf("Message incoming: %s", string(message))
-		client.conn.Write([]byte("Message received.\n"))
+		for _, client1 := range client.server.clients {
+			client1.conn.Write([]byte(message))
+		}
 	}
 }
